@@ -1,7 +1,9 @@
+import { Button } from "@/components/ui/button";
+
 export default function Home() {
   return (
     <main>
-      <h1>Welcome</h1>
+      <Button variant="elevated">Click me</Button>
     </main>
   );
 }
