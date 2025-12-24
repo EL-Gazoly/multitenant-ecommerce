@@ -1,12 +1,14 @@
-import Navbar from "./navbar";
+import { Navbar } from "./navbar";
+import { Footer } from "./footer";
 interface LayoutProps {
   children: React.ReactNode;
 }
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <div>
+    <div className=" flex flex-col min-h-screen">
       <Navbar />
-      {children}
+      <main className=" flex-1">{children}</main>
+      <Footer />
     </div>
   );
 };

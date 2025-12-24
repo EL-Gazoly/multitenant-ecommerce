@@ -52,7 +52,7 @@ const navbarItems = [
     children: "Contact",
   },
 ];
-const Navbar = () => {
+export const Navbar = () => {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   return (
@@ -103,5 +103,3 @@ const Navbar = () => {
     </nav>
   );
 };
-
-export default Navbar;
