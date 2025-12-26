@@ -2,11 +2,13 @@
   "name": "multitenant-ecommerce",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "generate": "payload generate:types"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
