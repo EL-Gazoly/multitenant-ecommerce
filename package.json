@@ -8,7 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "generate": "payload generate:types"
+    "generate": "payload generate:types",
+    "db:fresh": "payload migrate:fresh",
+    "db:seed": "bun run seed.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
