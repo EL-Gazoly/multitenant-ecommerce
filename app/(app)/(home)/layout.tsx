@@ -15,6 +15,8 @@ const Layout = async ({ children }: LayoutProps) => {
         exists: false,
       },
     },
+    sort: "name",
+    limit: -1, // get all categories
   });
   const formattedCategories: CustomCategory[] = categories.docs.map(
     (category) => ({
