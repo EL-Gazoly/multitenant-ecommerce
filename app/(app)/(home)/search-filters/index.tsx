@@ -1,9 +1,9 @@
-import { Category } from "@/payload-types";
 import { SearchInput } from "./search-input";
 import { Categories } from "./categories";
+import { CustomCategory } from "../types";
 
 interface SearchFiltersProps {
-  categories: (Category & { subcategories: Category[] })[];
+  categories: CustomCategory[];
 }
 export const SearchFilters = ({ categories }: SearchFiltersProps) => {
   return (

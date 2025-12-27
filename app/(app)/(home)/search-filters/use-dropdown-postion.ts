@@ -9,7 +9,6 @@ export const useDropdownPosition = (
 
     //calculate the intial postion of the dropdown
     let left = rect.left + window.scrollX; // winow.scrollX is the horizontal scroll position of the document
-    const gap = 12; // gap between button and menu (matches triangle position)
     const top = rect.bottom + window.scrollY; // window.scrollY is the vertical scroll position of the document
 
     //check if the dropdown would go off the right edge of the viewport

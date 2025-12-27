@@ -3,6 +3,7 @@ import { Footer } from "./footer";
 import { SearchFilters } from "./search-filters";
 import { payload } from "@/lib/payload";
 import { Category } from "@/payload-types";
+import { CustomCategory } from "./types";
 interface LayoutProps {
   children: React.ReactNode;
 }
@@ -15,13 +16,17 @@ const Layout = async ({ children }: LayoutProps) => {
       },
     },
   });
-  const formattedCategories = categories.docs.map((category) => ({
-    ...category,
-    subcategories: (category.subcategories?.docs ?? []).map((subcategory) => ({
-      ...(subcategory as Category),
-      subcategories: undefined,
-    })),
-  }));
+  const formattedCategories: CustomCategory[] = categories.docs.map(
+    (category) => ({
+      ...category,
+      subcategories: (category.subcategories?.docs ?? []).map(
+        (subcategory) => ({
+          ...(subcategory as Category),
+          subcategories: undefined,
+        })
+      ),
+    })
+  );
   console.log(formattedCategories);
   return (
     <div className=" flex flex-col min-h-screen">

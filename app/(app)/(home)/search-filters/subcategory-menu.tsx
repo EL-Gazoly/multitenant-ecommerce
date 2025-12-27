@@ -1,9 +1,9 @@
-import { Category } from "@/payload-types";
 import Link from "next/link";
 import { forwardRef } from "react";
+import { CustomCategory } from "../types";
 
 interface SubCategoryMenuProps {
-  category: Category;
+  category: CustomCategory;
   isOpen: boolean;
   position: { top: number; left: number };
   onMouseEnter?: () => void;
@@ -11,15 +11,7 @@ interface SubCategoryMenuProps {
 }
 export const SubCategoryMenu = forwardRef<HTMLDivElement, SubCategoryMenuProps>(
   ({ category, isOpen, position, onMouseEnter, onMouseLeave }, ref) => {
-    const subcategoriesArray: Category[] = Array.isArray(category.subcategories)
-      ? category.subcategories
-      : ((category.subcategories &&
-        typeof category.subcategories === "object" &&
-        "docs" in category.subcategories &&
-        Array.isArray(category.subcategories.docs)
-          ? category.subcategories.docs
-          : []) as Category[]);
-    if (!isOpen || !subcategoriesArray.length) return null;
+    if (!isOpen || category.subcategories.length === 0) return null;
     const backgroundColor = category.color || "#f5f5f5";
     return (
       <div
@@ -36,7 +28,7 @@ export const SubCategoryMenu = forwardRef<HTMLDivElement, SubCategoryMenuProps>(
           style={{ backgroundColor }}
         >
           <div>
-            {subcategoriesArray.map((subcategory: Category) => (
+            {category.subcategories.map((subcategory) => (
               <Link
                 key={subcategory.slug}
                 href="/"
