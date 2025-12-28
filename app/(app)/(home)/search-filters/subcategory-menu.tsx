@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { forwardRef } from "react";
-import { CustomCategory } from "../types";
+import { Category } from "@/modules/categories/types";
 
 interface SubCategoryMenuProps {
-  category: CustomCategory;
+  category: Category;
   isOpen: boolean;
   position: { top: number; left: number };
   onMouseEnter?: () => void;
@@ -28,11 +28,11 @@ export const SubCategoryMenu = forwardRef<HTMLDivElement, SubCategoryMenuProps>(
           style={{ backgroundColor }}
         >
           <div>
-            {category.subcategories.map((subcategory) => (
+            {category.subcategories.map((subcategory: Category) => (
               <Link
                 key={subcategory.slug}
                 href={`${category.slug}/${subcategory.slug}`}
-                className="w-full text-left p-4 hover:bg-black hover:text-white 
+                className="w-full text-left p-4 hover:bg-black hover:text-white
             flex justify-between items-center font-medium underline"
               >
                 {subcategory.name}

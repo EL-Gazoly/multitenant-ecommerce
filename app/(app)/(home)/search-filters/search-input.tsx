@@ -1,13 +1,14 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { ListFilterIcon, SearchIcon } from "lucide-react";
-import { CustomCategory } from "../types";
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
 import { useState } from "react";
 import { CategoriesSidebar } from "./categories-sidebar";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 interface SearchInputProps {
   disabled?: boolean;
-  categories: CustomCategory[];
+  categories: CategoriesGetManyOutput;
 }
 export const SearchInput = ({ disabled, categories }: SearchInputProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -33,6 +34,15 @@ export const SearchInput = ({ disabled, categories }: SearchInputProps) => {
       >
         <ListFilterIcon className="size-4" />
       </Button>
+    </div>
+  );
+};
+
+SearchInput.isLoading = () => {
+  return (
+    <div className=" flex items-center gap-2 w-full">
+      <Skeleton className="w-full h-12" />
+      <Skeleton className="size-12 shrink-0 lg:hidden" />
     </div>
   );
 };

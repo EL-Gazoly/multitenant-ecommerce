@@ -1,14 +1,15 @@
 "use client";
 import { CategoryDropdown } from "./category-dropdown";
-import { CustomCategory } from "../types";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ListFilterIcon } from "lucide-react";
 import { CategoriesSidebar } from "./categories-sidebar";
+import { Skeleton } from "@/components/ui/skeleton";
+import { CategoriesGetManyOutput, Category } from "@/modules/categories/types";
 
 interface CategoriesProps {
-  categories: CustomCategory[];
+  categories: CategoriesGetManyOutput;
 }
 export const Categories = ({ categories }: CategoriesProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -20,7 +21,7 @@ export const Categories = ({ categories }: CategoriesProps) => {
 
   const activeCategory = "all";
   const activeCategoryIndex = categories.findIndex(
-    (category) => category.slug === activeCategory
+    (category: Category) => category.slug === activeCategory
   );
   const isActiveCategoryHidden =
     activeCategoryIndex > visisbleCount && activeCategoryIndex !== -1;
@@ -86,7 +87,7 @@ export const Categories = ({ categories }: CategoriesProps) => {
         className="absolute opacity-0 pointer-events-none flex flex-nowrap items-center w-full"
         style={{ position: "fixed", top: -9999, left: -9999, width: "100%" }}
       >
-        {categories.map((category) => (
+        {categories.map((category: Category) => (
           <div key={category.id}>
             <CategoryDropdown
               category={category}
@@ -103,7 +104,7 @@ export const Categories = ({ categories }: CategoriesProps) => {
         onMouseEnter={() => setIsAnyHovered(true)}
         onMouseLeave={() => setIsAnyHovered(false)}
       >
-        {categories.slice(0, visisbleCount).map((category) => (
+        {categories.slice(0, visisbleCount).map((category: Category) => (
           <div key={category.id}>
             <CategoryDropdown
               category={category}
@@ -132,3 +133,13 @@ export const Categories = ({ categories }: CategoriesProps) => {
 };
 
 export default Categories;
+
+Categories.isLoading = () => {
+  return (
+    <div className="relative w-full">
+      <Skeleton className="w-full h-12" />
+      <Skeleton className="w-full h-12" />
+      <Skeleton className="w-full h-12" />
+    </div>
+  );
+};

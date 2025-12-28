@@ -5,10 +5,10 @@ import { cn } from "@/lib/utils";
 import { useRef, useState } from "react";
 import { useDropdownPosition } from "./use-dropdown-postion";
 import { SubCategoryMenu } from "./subcategory-menu";
-import { CustomCategory } from "../types";
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
 import Link from "next/link";
 interface CategoryDropdownProps {
-  category: CustomCategory;
+  category: CategoriesGetManyOutput;
   isActive?: boolean;
   isNavigationHovered?: boolean;
 }

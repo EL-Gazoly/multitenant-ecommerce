@@ -1,5 +1,4 @@
 "use client";
-import { CustomCategory } from "../types";
 import { useState } from "react";
 import {
   Sheet,
@@ -10,10 +9,11 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { CategoriesGetManyOutput, Category } from "@/modules/categories/types";
 interface CategoriesSidebarProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  categories: CustomCategory[];
+  categories: CategoriesGetManyOutput;
 }
 export const CategoriesSidebar = ({
   open,
@@ -21,11 +21,11 @@ export const CategoriesSidebar = ({
   categories,
 }: CategoriesSidebarProps) => {
   const router = useRouter();
-  const [parentCategories, setParentCategories] = useState<
-    CustomCategory[] | null
-  >(null);
-  const [selectedCategory, setSelectedCategory] =
-    useState<CustomCategory | null>(null);
+  const [parentCategories, setParentCategories] =
+    useState<CategoriesGetManyOutput | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null
+  );
 
   const currentCategories = parentCategories ?? categories ?? [];
   const handleOpenChange = (open: boolean) => {
@@ -33,9 +33,9 @@ export const CategoriesSidebar = ({
     setSelectedCategory(null);
     onOpenChange(open);
   };
-  const handleCategoryClick = (category: CustomCategory) => {
+  const handleCategoryClick = (category: Category) => {
     if (category.subcategories && category.subcategories.length > 0) {
-      setParentCategories(category.subcategories as CustomCategory[]);
+      setParentCategories(category.subcategories as CategoriesGetManyOutput);
       setSelectedCategory(category);
     } else {
       // this is a leaf category no subcategories so we can navigate to the category page
@@ -80,7 +80,7 @@ export const CategoriesSidebar = ({
               Back
             </button>
           )}
-          {currentCategories.map((category) => (
+          {currentCategories.map((category: Category) => (
             <button
               key={category.slug}
               className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center justify-between text-base font-medium"
