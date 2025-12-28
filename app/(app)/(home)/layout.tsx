@@ -29,7 +29,6 @@ const Layout = async ({ children }: LayoutProps) => {
       ),
     })
   );
-  console.log(formattedCategories);
   return (
     <div className=" flex flex-col min-h-screen">
       <Navbar />
