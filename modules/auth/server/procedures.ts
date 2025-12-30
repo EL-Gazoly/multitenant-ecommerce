@@ -1,9 +1,8 @@
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { headers as getHeaders, cookies as getCookies } from "next/headers";
-import { z } from "zod";
-import { AUTH_COOKIE_NAME } from "../constanst";
 import { loginSchema, registerSchema } from "../schema";
+import { generateAuthCookie } from "../utils";
 
 export const authRouter = createTRPCRouter({
   session: baseProcedure.query(async ({ ctx }) => {
@@ -45,12 +44,10 @@ export const authRouter = createTRPCRouter({
           message: "Failed to create user",
         });
       }
-      const cookies = await getCookies();
-      cookies.set(AUTH_COOKIE_NAME, user.token || "", {
-        httpOnly: true,
-        path: "/",
-        maxAge: 60 * 60 * 24 * 30,
-      });
+      await generateAuthCookie({
+        prefix: ctx.db.config.cookiePrefix,
+        value: user.token || "",
+      })();
       return user;
     }),
   login: baseProcedure.input(loginSchema).mutation(async ({ ctx, input }) => {
@@ -65,17 +62,16 @@ export const authRouter = createTRPCRouter({
         message: "Invalid email or password",
       });
     }
-    const cookies = await getCookies();
-    cookies.set(AUTH_COOKIE_NAME, user.token || "", {
-      httpOnly: true,
-      path: "/",
-      maxAge: 60 * 60 * 24 * 30,
-    });
+    await generateAuthCookie({
+      prefix: ctx.db.config.cookiePrefix,
+      value: user.token || "",
+    })();
+
     return user;
   }),
-  logout: baseProcedure.mutation(async ({}) => {
+  logout: baseProcedure.mutation(async ({ ctx }) => {
     const cookies = await getCookies();
-    cookies.delete(AUTH_COOKIE_NAME);
+    cookies.delete(ctx.db.config.cookiePrefix + "-token");
     return { success: true };
   }),
 });
