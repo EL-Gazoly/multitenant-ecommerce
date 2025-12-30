@@ -10,6 +10,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { CategoriesGetManyOutput, Category } from "@/modules/categories/types";
+import { useQuery } from "@tanstack/react-query";
+import { useTRPC } from "@/trpc/cliient";
+import Link from "next/link";
 interface CategoriesSidebarProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -26,7 +29,8 @@ export const CategoriesSidebar = ({
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
-
+  const trpc = useTRPC();
+  const session = useQuery(trpc.auth.session.queryOptions());
   const currentCategories = parentCategories ?? categories ?? [];
   const handleOpenChange = (open: boolean) => {
     setParentCategories(null);
@@ -92,6 +96,22 @@ export const CategoriesSidebar = ({
               )}
             </button>
           ))}
+          {session.data?.user ? (
+            <div className=" w-full flex flex-col pb-2">
+              <button className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium">
+                <Link href="/admin">Dashboard</Link>
+              </button>
+            </div>
+          ) : (
+            <div className=" w-full flex flex-col pb-2">
+              <button className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium">
+                <Link href="/sign-in">Log in</Link>
+              </button>
+              <button className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium">
+                <Link href="/sign-up">Start Selling</Link>
+              </button>
+            </div>
+          )}
         </ScrollArea>
       </SheetContent>
     </Sheet>
