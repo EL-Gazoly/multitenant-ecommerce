@@ -1,17 +1,22 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import { ListFilterIcon, SearchIcon } from "lucide-react";
+import { BookmarkCheckIcon, ListFilterIcon, SearchIcon } from "lucide-react";
 import { CategoriesGetManyOutput } from "@/modules/categories/types";
 import { useState } from "react";
 import { CategoriesSidebar } from "./categories-sidebar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useQuery } from "@tanstack/react-query";
+import { useTRPC } from "@/trpc/cliient";
 interface SearchInputProps {
   disabled?: boolean;
   categories: CategoriesGetManyOutput;
 }
 export const SearchInput = ({ disabled, categories }: SearchInputProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const trpc = useTRPC();
+  const session = useQuery(trpc.auth.session.queryOptions());
+
   return (
     <div className=" flex items-center gap-2 w-full">
       <CategoriesSidebar
@@ -34,6 +39,11 @@ export const SearchInput = ({ disabled, categories }: SearchInputProps) => {
       >
         <ListFilterIcon className="size-4" />
       </Button>
+      {session.data?.user && (
+        <Button variant="elevated" suppressHydrationWarning>
+          <BookmarkCheckIcon className="size-4" />
+        </Button>
+      )}
     </div>
   );
 };
