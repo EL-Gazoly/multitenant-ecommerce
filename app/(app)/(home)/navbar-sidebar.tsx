@@ -6,6 +6,8 @@ import {
 } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { useTRPC } from "@/trpc/cliient";
 interface NavbarItemProps {
   href: string;
   children: React.ReactNode;
@@ -20,6 +22,8 @@ export const NavbarSidebar = ({
   open,
   onOpenChange,
 }: NavbarSidebarProps) => {
+  const trpc = useTRPC();
+  const session = useQuery(trpc.auth.session.queryOptions());
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="left" className="p-0 transition-none">
@@ -39,9 +43,18 @@ export const NavbarSidebar = ({
               {item.children}
             </Link>
           ))}
-          <div className=" border-t">
-            <Link href={"/sign-in"}>Log in</Link>
-            <Link href={"/sign-up"}>Start selling</Link>
+          <div className=" border-t" suppressHydrationWarning>
+            {session.data?.user ? (
+              <>
+                <Link href={"/admin"}>Dashboard</Link>
+                <Link href={"/sign-out"}>Log out</Link>
+              </>
+            ) : (
+              <>
+                <Link href={"/sign-in"}>Log in</Link>
+                <Link href={"/sign-up"}>Start selling</Link>
+              </>
+            )}
           </div>
         </ScrollArea>
       </SheetContent>

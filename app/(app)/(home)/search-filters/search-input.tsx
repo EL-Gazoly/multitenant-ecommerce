@@ -39,7 +39,7 @@ export const SearchInput = ({ disabled, categories }: SearchInputProps) => {
       >
         <ListFilterIcon className="size-4" />
       </Button>
-      {session.data?.user && (
+      {session.data && (
         <Button variant="elevated" suppressHydrationWarning>
           <BookmarkCheckIcon className="size-4" />
         </Button>
