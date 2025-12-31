@@ -84,6 +84,9 @@ export const CategoriesSidebar = ({
               Back
             </button>
           )}
+          <button className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium" onClick={() => handleCategoryClick({ slug: "all", name: "All", color: "white" })}>
+            All
+          </button>
           {currentCategories.map((category: Category) => (
             <button
               key={category.slug}
@@ -96,22 +99,6 @@ export const CategoriesSidebar = ({
               )}
             </button>
           ))}
-          {session.data?.user ? (
-            <div className=" w-full flex flex-col pb-2">
-              <button className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium">
-                <Link href="/admin">Dashboard</Link>
-              </button>
-            </div>
-          ) : (
-            <div className=" w-full flex flex-col pb-2">
-              <button className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium">
-                <Link href="/sign-in">Log in</Link>
-              </button>
-              <button className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium">
-                <Link href="/sign-up">Start Selling</Link>
-              </button>
-            </div>
-          )}
         </ScrollArea>
       </SheetContent>
     </Sheet>

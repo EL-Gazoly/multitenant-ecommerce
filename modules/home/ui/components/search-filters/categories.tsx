@@ -7,11 +7,14 @@ import { ListFilterIcon } from "lucide-react";
 import { CategoriesSidebar } from "./categories-sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CategoriesGetManyOutput, Category } from "@/modules/categories/types";
+import { useParams } from "next/navigation";
+import Link from "next/link";
 
 interface CategoriesProps {
   categories: CategoriesGetManyOutput;
 }
 export const Categories = ({ categories }: CategoriesProps) => {
+  const params = useParams();
   const containerRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
   const viewAllRef = useRef<HTMLDivElement>(null);
@@ -19,10 +22,12 @@ export const Categories = ({ categories }: CategoriesProps) => {
   const [isAnyHovered, setIsAnyHovered] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
-  const activeCategory = "all";
+  const categoryParam = params.category as string | undefined;
+  const activeCategory = categoryParam || "all";
   const activeCategoryIndex = categories.findIndex(
     (category: Category) => category.slug === activeCategory
   );
+  console.log("activeCategory", activeCategory);
   const isActiveCategoryHidden =
     activeCategoryIndex > visisbleCount && activeCategoryIndex !== -1;
 
@@ -98,6 +103,7 @@ export const Categories = ({ categories }: CategoriesProps) => {
         ))}
       </div>
       {/* Visible categories */}
+
       <div
         className=" w-full flex flex-nowrap items-center"
         ref={containerRef}
@@ -108,13 +114,14 @@ export const Categories = ({ categories }: CategoriesProps) => {
           <div key={category.id}>
             <CategoryDropdown
               category={category}
-              isActive={false}
+              isActive={category.slug === activeCategory}
               isNavigationHovered={isAnyHovered}
             />
           </div>
         ))}
         <div ref={viewAllRef} className=" shrink-0">
           <Button
+            variant={"elevated"}
             className={cn(
               "h-11 px-4 bg-transparent border-transparent rounded-full hover:bg-white hover:border-primary text-black",
               isActiveCategoryHidden &&

@@ -1,12 +1,16 @@
 interface SubCategoryPageProps {
-  params: {
+  params: Promise<{
     category: string;
-    subCategory: string;
-  };
+    subcategory: string;
+  }>;
 }
 export default async function SubCategoryPage({
   params,
 }: SubCategoryPageProps) {
-  const { subCategory } = await params;
-  return <div>{subCategory}</div>;
+  const { category, subcategory } = await params;
+  return (
+    <div>
+      {category} / {subcategory}
+    </div>
+  );
 }
