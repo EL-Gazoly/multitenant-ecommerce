@@ -45,7 +45,7 @@ export const CategoriesSidebar = ({
       // this is a leaf category no subcategories so we can navigate to the category page
       if (parentCategories && selectedCategory) {
         // this is a subcategory so we can navigate to the subcategory page
-        router.push(`/categories/${selectedCategory.slug}/${category.slug}`);
+        router.push(`/${selectedCategory.slug}/${category.slug}`);
       } else {
         // this is the root category so we can navigate to the category page
         if (category.slug === "all") {
