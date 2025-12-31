@@ -8,7 +8,6 @@ import { CategoriesSidebar } from "./categories-sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CategoriesGetManyOutput, Category } from "@/modules/categories/types";
 import { useParams } from "next/navigation";
-import Link from "next/link";
 
 interface CategoriesProps {
   categories: CategoriesGetManyOutput;
