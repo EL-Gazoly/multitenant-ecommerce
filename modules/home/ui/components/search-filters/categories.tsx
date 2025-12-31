@@ -26,7 +26,6 @@ export const Categories = ({ categories }: CategoriesProps) => {
   const activeCategoryIndex = categories.findIndex(
     (category: Category) => category.slug === activeCategory
   );
-  console.log("activeCategory", activeCategory);
   const isActiveCategoryHidden =
     activeCategoryIndex > visisbleCount && activeCategoryIndex !== -1;
 
