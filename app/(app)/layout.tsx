@@ -1,3 +1,4 @@
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
@@ -23,7 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${dmSans.variable} antialiased`}>
         <TRPCReactProvider>
-          {children}
+          <NuqsAdapter>{children}</NuqsAdapter>
           <Toaster />
         </TRPCReactProvider>
       </body>
