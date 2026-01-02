@@ -41,5 +41,11 @@ export const Products: CollectionConfig = {
       options: ["30-days", "14-days", "7-days", "3-days", "1-day", "no-refund"],
       defaultValue: "30-days",
     },
+    {
+      name: "tags",
+      type: "relationship",
+      relationTo: "tags",
+      hasMany: true,
+    },
   ],
 };
