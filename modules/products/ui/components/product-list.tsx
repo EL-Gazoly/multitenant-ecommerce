@@ -1,12 +1,16 @@
 "use client";
 import { useTRPC } from "@/trpc/cliient";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useProductFilter } from "@/modules/products/hooks/use-product-filter";
 
 export const ProductList = ({ category }: { category: string }) => {
+  const [filters] = useProductFilter();
   const trpc = useTRPC();
   const { data: products } = useSuspenseQuery(
     trpc.products.getProducts.queryOptions({
       category,
+      minPrice: filters.minPrice ? Number(filters.minPrice) : undefined,
+      maxPrice: filters.maxPrice ? Number(filters.maxPrice) : undefined,
     })
   );
   return (

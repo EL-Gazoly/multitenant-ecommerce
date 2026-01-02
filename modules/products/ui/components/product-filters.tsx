@@ -32,15 +32,27 @@ export const ProductFilters = () => {
     setFilters({ ...filters, [key]: value });
   };
   const handleClear = () => {
-    setFilters({});
+    setFilters({
+      minPrice: "",
+      maxPrice: "",
+    });
   };
+  const hasAnyFilters = Object.entries(filters).some(([, value]) =>
+    typeof value === "string" ? value !== "" : value !== null
+  );
   return (
     <div className=" border rounded-md bg-white ">
       <div className=" p-4 border-b flex items-center justify-between">
         <p className=" font-medium">Filters</p>
-        <button className="underline" onClick={handleClear} type="button">
-          Clear
-        </button>
+        {hasAnyFilters && (
+          <button
+            className="underline cursor-pointer"
+            onClick={handleClear}
+            type="button"
+          >
+            Clear
+          </button>
+        )}
       </div>
       <ProductFilter title="Price" className="border-b-0">
         <PriceFilter
