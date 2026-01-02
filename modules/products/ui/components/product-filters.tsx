@@ -39,9 +39,11 @@ export const ProductFilters = () => {
       tags: [],
     });
   };
-  const hasAnyFilters = Object.entries(filters).some(([, value]) =>
-    typeof value === "string" ? value !== "" : value !== null
-  );
+  const hasAnyFilters = Object.entries(filters).some(([key, value]) => {
+    if (key === "sort") return false;
+    if (Array.isArray(value)) return value.length > 0;
+    return typeof value === "string" ? value !== "" : value !== null;
+  });
   return (
     <div className=" border rounded-md bg-white ">
       <div className=" p-4 border-b flex items-center justify-between">
