@@ -1,0 +1,70 @@
+import { Checkbox } from "@/components/ui/checkbox";
+import { useTRPC } from "@/trpc/cliient";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { DEFAULT_LIMIT } from "@/app/constants";
+import { LoaderIcon } from "lucide-react";
+interface TagsFilterProps {
+  value: string[] | null;
+  onChange: (value: string[]) => void;
+}
+export const TagsFilter = ({ value, onChange }: TagsFilterProps) => {
+  const trpc = useTRPC();
+  const {
+    data: tagsData,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery(
+    trpc.tags.getAll.infiniteQueryOptions(
+      {
+        limit: DEFAULT_LIMIT,
+      },
+      {
+        getNextPageParam: (lastPage) =>
+          lastPage.docs.length > 0 ? lastPage.nextPage : undefined,
+      }
+    )
+  );
+  const onClick = (tag: string) => {
+    if (value?.includes(tag)) {
+      onChange(value?.filter((v) => v !== tag) || []);
+    } else {
+      onChange([...(value || []), tag]);
+    }
+  };
+  return (
+    <div className="flex flex-col gap-2">
+      {isLoading ? (
+        <div className="flex items-center justify-center p-4">
+          <LoaderIcon className="size-4 animate-spin" />
+        </div>
+      ) : (
+        tagsData?.pages.map((page) =>
+          page.docs.map((tag) => (
+            <div
+              key={tag.id}
+              className="flex items-center justify-between cursor-pointer"
+              onClick={() => onClick(tag.name)}
+            >
+              <p className="font-medium">{tag.name}</p>
+              <Checkbox
+                checked={value?.includes(tag.name)}
+                onCheckedChange={() => onClick(tag.name)}
+              />
+            </div>
+          ))
+        )
+      )}
+      {hasNextPage && (
+        <button
+          disabled={isFetchingNextPage}
+          onClick={() => fetchNextPage()}
+          className="underline font-medium justify-start text-start disabled:opacity-50 cursor-pointer"
+        >
+          Load more...
+        </button>
+      )}
+    </div>
+  );
+};

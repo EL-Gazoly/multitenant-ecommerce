@@ -11,6 +11,7 @@ export const ProductList = ({ category }: { category: string }) => {
       category,
       minPrice: filters.minPrice ? Number(filters.minPrice) : undefined,
       maxPrice: filters.maxPrice ? Number(filters.maxPrice) : undefined,
+      tags: filters.tags,
     })
   );
   return (

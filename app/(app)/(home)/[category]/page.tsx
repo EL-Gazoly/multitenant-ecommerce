@@ -7,7 +7,7 @@ import {
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { ProductFilters } from "@/modules/products/ui/components/product-filters";
-import { loadProductFilter } from "@/modules/products/hooks/use-product-filter";
+import { loadProductFilter } from "@/modules/products/hooks/search-params";
 
 interface CategoryPageProps {
   params: Promise<{
@@ -27,6 +27,7 @@ export default async function CategoryPage({
       category,
       minPrice: filters.minPrice ? Number(filters.minPrice) : undefined,
       maxPrice: filters.maxPrice ? Number(filters.maxPrice) : undefined,
+      tags: filters.tags,
     })
   );
   return (
