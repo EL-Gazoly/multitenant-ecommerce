@@ -6,7 +6,6 @@ import { ProductCard, ProductCardSkeleton } from "./product-card";
 import { DEFAULT_LIMIT } from "@/app/constants";
 import { Button } from "@/components/ui/button";
 import { InboxIcon } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export const ProductList = ({ category }: { category: string }) => {
   const [filters] = useProductFilter();
