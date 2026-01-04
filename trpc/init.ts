@@ -1,6 +1,7 @@
 import configPromise from "@payload-config";
-import { initTRPC } from "@trpc/server";
 import { getPayload } from "payload";
+import { initTRPC } from "@trpc/server";
+
 import { cache } from "react";
 import superjson from "superjson";
 export const createTRPCContext = cache(async () => {

@@ -1,4 +1,5 @@
-import { payload } from "@/lib/payload";
+import configPromise from "@payload-config";
+import { getPayload } from "payload";
 const categories = [
   {
     name: "All",
@@ -134,8 +135,17 @@ const categories = [
     ],
   },
 ];
-
+const payload = await getPayload({ config: configPromise });
 const seed = async () => {
+  await payload.create({
+    collection: "users",
+    data: {
+      username: "admin",
+      email: "admin@demo.com",
+      password: "demo",
+      roles: ["super-admin"],
+    },
+  });
   for (const category of categories) {
     const parentCategory = await payload.create({
       collection: "categories",
