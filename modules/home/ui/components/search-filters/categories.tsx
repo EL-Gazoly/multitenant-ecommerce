@@ -1,6 +1,6 @@
 "use client";
 import { CategoryDropdown } from "./category-dropdown";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ListFilterIcon } from "lucide-react";
@@ -17,17 +17,33 @@ export const Categories = ({ categories }: CategoriesProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
   const viewAllRef = useRef<HTMLDivElement>(null);
-  const [visisbleCount, setVisisbleCount] = useState<number>(categories.length);
+  // Sort categories to put "All" at the top and "other" at the bottom
+  const sortedCategories = useMemo(() => {
+    return [...categories].sort((a, b) => {
+      // "all" goes first
+      if (a.slug === "all") return -1;
+      if (b.slug === "all") return 1;
+      // "other" goes last
+      if (a.slug === "other") return 1;
+      if (b.slug === "other") return -1;
+      // Maintain original order for everything else
+      return 0;
+    });
+  }, [categories]);
+
+  const [visisbleCount, setVisisbleCount] = useState<number>(
+    sortedCategories.length
+  );
   const [isAnyHovered, setIsAnyHovered] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
   const categoryParam = params.category as string | undefined;
   const activeCategory = categoryParam || "all";
-  const activeCategoryIndex = categories.findIndex(
+  const activeCategoryIndex = sortedCategories.findIndex(
     (category: Category) => category.slug === activeCategory
   );
   const isActiveCategoryHidden =
-    activeCategoryIndex > visisbleCount && activeCategoryIndex !== -1;
+    activeCategoryIndex >= visisbleCount && activeCategoryIndex !== -1;
 
   useEffect(() => {
     const calcualteVisible = () => {
@@ -76,13 +92,13 @@ export const Categories = ({ categories }: CategoriesProps) => {
     }
 
     return () => resizeObserver.disconnect();
-  }, [categories.length]);
+  }, [sortedCategories.length]);
   return (
     <div className="relative w-full">
       <CategoriesSidebar
         open={isSidebarOpen}
         onOpenChange={setIsSidebarOpen}
-        categories={categories}
+        categories={sortedCategories}
       />
       {/* hidden div to measure all items width */}
       <div
@@ -90,7 +106,7 @@ export const Categories = ({ categories }: CategoriesProps) => {
         className="absolute opacity-0 pointer-events-none flex flex-nowrap items-center w-full"
         style={{ position: "fixed", top: -9999, left: -9999, width: "100%" }}
       >
-        {categories.map((category: Category) => (
+        {sortedCategories.map((category: Category) => (
           <div key={category.id}>
             <CategoryDropdown
               category={category}
@@ -108,7 +124,7 @@ export const Categories = ({ categories }: CategoriesProps) => {
         onMouseEnter={() => setIsAnyHovered(true)}
         onMouseLeave={() => setIsAnyHovered(false)}
       >
-        {categories.slice(0, visisbleCount).map((category: Category) => (
+        {sortedCategories.slice(0, visisbleCount).map((category: Category) => (
           <div key={category.id}>
             <CategoryDropdown
               category={category}
@@ -122,9 +138,7 @@ export const Categories = ({ categories }: CategoriesProps) => {
             variant={"elevated"}
             className={cn(
               "h-11 px-4 bg-transparent border-transparent rounded-full hover:bg-white hover:border-primary text-black",
-              isActiveCategoryHidden &&
-                !isAnyHovered &&
-                "bg-white border-primary"
+              isActiveCategoryHidden && "bg-white border-primary"
             )}
             onClick={() => setIsSidebarOpen(true)}
           >

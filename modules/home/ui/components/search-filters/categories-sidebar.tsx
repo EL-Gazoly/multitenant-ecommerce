@@ -26,7 +26,18 @@ export const CategoriesSidebar = ({
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
-  const currentCategories = parentCategories ?? categories ?? [];
+  // Sort categories to put "All" at the top and "other" at the bottom
+  const sortedCategories = [...(categories ?? [])].sort((a, b) => {
+    // "all" goes first
+    if (a.slug === "all") return -1;
+    if (b.slug === "all") return 1;
+    // "other" goes last
+    if (a.slug === "other") return 1;
+    if (b.slug === "other") return -1;
+    // Maintain original order for everything else
+    return 0;
+  });
+  const currentCategories = parentCategories ?? sortedCategories;
   const handleOpenChange = (open: boolean) => {
     setParentCategories(null);
     setSelectedCategory(null);
@@ -58,6 +69,17 @@ export const CategoriesSidebar = ({
       setSelectedCategory(null);
     }
   };
+  const handleAllSubcategoryClick = () => {
+    if (selectedCategory) {
+      // Navigate to the parent category page
+      if (selectedCategory.slug === "all") {
+        router.push("/");
+      } else {
+        router.push(`/${selectedCategory.slug}`);
+      }
+      handleOpenChange(false);
+    }
+  };
   const backgroundColor = selectedCategory?.color ?? "white";
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -79,14 +101,14 @@ export const CategoriesSidebar = ({
               Back
             </button>
           )}
-          <button
-            className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium"
-            onClick={() =>
-              handleCategoryClick({ slug: "all", name: "All", color: "white" })
-            }
-          >
-            All
-          </button>
+          {parentCategories && selectedCategory && (
+            <button
+              className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium"
+              onClick={handleAllSubcategoryClick}
+            >
+              All
+            </button>
+          )}
           {currentCategories.map((category: Category) => (
             <button
               key={category.slug}

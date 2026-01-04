@@ -10,6 +10,9 @@ export const categoriesRouter = createTRPCRouter({
           exists: false,
         },
       },
+      sort: "name",
+      limit: 1000,
+      pagination: false,
     });
     const formattedCategories = categories.docs.map((category) => ({
       ...category,
