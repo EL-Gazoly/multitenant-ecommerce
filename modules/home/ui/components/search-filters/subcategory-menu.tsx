@@ -5,19 +5,18 @@ import { Category } from "@/modules/categories/types";
 interface SubCategoryMenuProps {
   category: Category;
   isOpen: boolean;
-  position: { top: number; left: number };
   onMouseEnter?: () => void;
   onMouseLeave?: (e: React.MouseEvent) => void;
 }
 export const SubCategoryMenu = forwardRef<HTMLDivElement, SubCategoryMenuProps>(
-  ({ category, isOpen, position, onMouseEnter, onMouseLeave }, ref) => {
+  ({ category, isOpen, onMouseEnter, onMouseLeave }, ref) => {
     if (!isOpen || category.subcategories.length === 0) return null;
     const backgroundColor = category.color || "#f5f5f5";
     return (
       <div
         ref={ref}
-        className="fixed z-100"
-        style={{ top: position.top, left: position.left }}
+        className="absolute z-100"
+        style={{ top: "100%", left: 0 }}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
