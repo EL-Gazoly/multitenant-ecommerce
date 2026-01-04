@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 export default async function SignUpPage() {
   const session = await caller.auth.session();
-  if (session) {
+  if (session?.user) {
     redirect("/");
   }
   return <SignUpView />;

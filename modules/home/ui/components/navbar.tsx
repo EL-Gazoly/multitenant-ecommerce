@@ -78,7 +78,7 @@ export const Navbar = () => {
           </NavbarItem>
         ))}
       </div>
-      {session.data ? (
+      {session.data?.user ? (
         <div className=" hidden lg:flex">
           <Button
             asChild
