@@ -6,8 +6,17 @@ import { ProductCard, ProductCardSkeleton } from "./product-card";
 import { DEFAULT_LIMIT } from "@/app/constants";
 import { Button } from "@/components/ui/button";
 import { InboxIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export const ProductList = ({ category }: { category: string }) => {
+export const ProductList = ({
+  category,
+  tenantSlug,
+  narrowView,
+}: {
+  category: string;
+  tenantSlug: string;
+  narrowView?: boolean;
+}) => {
   const [filters] = useProductFilter();
   const trpc = useTRPC();
   const {
@@ -24,6 +33,7 @@ export const ProductList = ({ category }: { category: string }) => {
         tags: filters.tags,
         sort: filters.sort,
         limit: DEFAULT_LIMIT,
+        tenantSlug,
       },
       {
         getNextPageParam: (lastPage) => {
@@ -42,7 +52,12 @@ export const ProductList = ({ category }: { category: string }) => {
   }
   return (
     <>
-      <div className=" grid grid-cols-1 sm:grid-cols-2  xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+      <div
+        className={cn(
+          " grid grid-cols-1 sm:grid-cols-2  xl:grid-cols-3 2xl:grid-cols-4 gap-4",
+          narrowView && "lg: grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3"
+        )}
+      >
         {products?.pages
           .flatMap((page) => page.docs)
           .map((product) => (
@@ -51,9 +66,9 @@ export const ProductList = ({ category }: { category: string }) => {
               id={product.id}
               name={product.name}
               price={product.price}
-              imageUrl={product.image?.[0]?.url}
-              authorUserName={"elgazoly"}
-              authorImageUrl={undefined}
+              imageUrl={product.image?.url}
+              tenantSlug={product.tenant?.slug}
+              tenantImageUrl={product.tenant?.image?.url ?? ""}
               reviewRating={3}
               reviewCount={5}
             />
@@ -75,9 +90,18 @@ export const ProductList = ({ category }: { category: string }) => {
   );
 };
 
-export const ProductListSkeleton = () => {
+export const ProductListSkeleton = ({
+  narrowView,
+}: {
+  narrowView?: boolean;
+}) => {
   return (
-    <div className=" grid grid-cols-1 sm:grid-cols-2  xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+    <div
+      className={cn(
+        " grid grid-cols-1 sm:grid-cols-2  xl:grid-cols-3 2xl:grid-cols-4 gap-4",
+        narrowView && "lg: grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3"
+      )}
+    >
       {Array.from({ length: DEFAULT_LIMIT }).map((_, index) => (
         <ProductCardSkeleton key={index} />
       ))}

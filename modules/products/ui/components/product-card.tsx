@@ -2,14 +2,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { Media } from "@/payload-types";
 import { StarIcon } from "lucide-react";
-
+import { useRouter } from "next/navigation";
+import { generateTenantUrl } from "@/lib/utils";
 interface ProductCardProps {
   id: string;
   name: string;
   price: number;
   imageUrl?: Media["url"];
-  authorUserName: string;
-  authorImageUrl?: string;
+  tenantSlug: string;
+  tenantImageUrl?: Media["url"];
   reviewRating: number;
   reviewCount: number;
 }
@@ -18,11 +19,17 @@ export const ProductCard = ({
   name,
   price,
   imageUrl,
-  authorUserName,
-  authorImageUrl,
+  tenantSlug,
+  tenantImageUrl,
   reviewRating,
   reviewCount,
 }: ProductCardProps) => {
+  const router = useRouter();
+  const handleUserClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.push(generateTenantUrl(tenantSlug));
+  };
   return (
     <Link href={`/products/${id}`}>
       <div className=" border rounded-md bg-white overflow-hidden h-full flex flex-col hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-shadow">
@@ -36,19 +43,17 @@ export const ProductCard = ({
         </div>
         <div className="p-4 border-y flex flex-col gap-3 flex-1">
           <h2 className=" text-lg font-medium line-clamp-4">{name}</h2>
-          <div className="flex items-center gap-2">
-            {authorImageUrl && (
+          <div className="flex items-center gap-2" onClick={handleUserClick}>
+            {tenantImageUrl && (
               <Image
-                src={authorImageUrl}
-                alt={authorUserName}
+                src={tenantImageUrl}
+                alt={tenantSlug}
                 width={16}
                 height={16}
                 className=" rounded-full border shrink-0 size-[16px]"
               />
             )}
-            <span className=" text-sm underline font-medium">
-              {authorUserName}
-            </span>
+            <span className=" text-sm underline font-medium">{tenantSlug}</span>
           </div>
           {reviewCount > 0 && (
             <div className="flex items-center gap-1">
