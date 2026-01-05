@@ -13,6 +13,7 @@ interface LayoutProps {
 const Layout = async ({ children }: LayoutProps) => {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery(trpc.categories.getMany.queryOptions());
+  await queryClient.prefetchQuery(trpc.auth.session.queryOptions());
   return (
     <div className=" flex flex-col min-h-screen">
       <Navbar />
