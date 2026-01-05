@@ -31,7 +31,7 @@ export const Products: CollectionConfig = {
       hasMany: true,
     },
     {
-      name: "images",
+      name: "image",
       type: "upload",
       relationTo: "media",
     },
