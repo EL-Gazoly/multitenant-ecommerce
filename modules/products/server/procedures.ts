@@ -1,10 +1,24 @@
 import { z } from "zod";
 import { createTRPCRouter, baseProcedure } from "@/trpc/init";
 import type { Sort, Where } from "payload";
-import type { Category, Media, Tenant } from "@/payload-types";
+import type { Category, Media, Product, Tenant } from "@/payload-types";
 import { sortVAlues } from "../hooks/search-params";
 import { DEFAULT_LIMIT } from "@/app/constants";
 export const productsRouter = createTRPCRouter({
+  getOne: baseProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { id } = input;
+      const product = await ctx.db.findByID({
+        collection: "products",
+        depth: 2, // to get the tenant and the image
+        id,
+      });
+      return product as Product & {
+        image: Media | null;
+        tenant: Tenant & { image: Media | null };
+      };
+    }),
   getProducts: baseProcedure
     .input(
       z.object({
