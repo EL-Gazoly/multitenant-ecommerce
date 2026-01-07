@@ -2,7 +2,7 @@
 import { Input } from "@/components/ui/input";
 import { BookmarkCheckIcon, ListFilterIcon, SearchIcon } from "lucide-react";
 import { CategoriesGetManyOutput } from "@/modules/categories/types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CategoriesSidebar } from "./categories-sidebar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,8 +14,13 @@ interface SearchInputProps {
 }
 export const SearchInput = ({ disabled, categories }: SearchInputProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
   const trpc = useTRPC();
   const session = useQuery(trpc.auth.session.queryOptions());
+
+  useEffect(() => {
+    Promise.resolve().then(() => setHasMounted(true));
+  }, []);
 
   return (
     <div className=" flex items-center gap-2 w-full">
@@ -39,7 +44,7 @@ export const SearchInput = ({ disabled, categories }: SearchInputProps) => {
       >
         <ListFilterIcon className="size-4" />
       </Button>
-      {session.data && (
+      {hasMounted && session.data && (
         <Button variant="elevated">
           <BookmarkCheckIcon className="size-4" />
         </Button>
