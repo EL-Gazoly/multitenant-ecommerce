@@ -181,7 +181,7 @@ export interface Tenant {
    * The image of the store
    */
   image?: (string | null) | Media;
-  ' stripeAccountId'?: string | null;
+  stripeAccountId?: string | null;
   /**
    * You cannot create products until the Stripe details are submitted
    */
@@ -442,7 +442,7 @@ export interface TenantsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   image?: T;
-  ' stripeAccountId'?: T;
+  stripeAccountId?: T;
   stripeDetailsSubmitted?: T;
   updatedAt?: T;
   createdAt?: T;

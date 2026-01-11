@@ -35,7 +35,7 @@ export const Tenants: CollectionConfig = {
       },
     },
     {
-      name: " stripeAccountId",
+      name: "stripeAccountId",
       type: "text",
       admin: {
         readOnly: true,
