@@ -11,12 +11,11 @@ interface CartState {
   removeProductFromCart: (tenantSlug: string, productId: string) => void;
   clearCart: (tenantId: string) => void;
   clearAllCarts: () => void;
-  getCartByTenant: (tenantSlug: string) => string[];
 }
 
 export const useCartStore = create<CartState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       tenantCarts: {},
       addProductToCart: (tenantSlug: string, productId: string) => {
         set((state) => {
@@ -59,10 +58,6 @@ export const useCartStore = create<CartState>()(
       },
       clearAllCarts: () => {
         set({ tenantCarts: {} });
-      },
-      getCartByTenant: (tenantSlug: string) => {
-        const state = get();
-        return state.tenantCarts[tenantSlug]?.productIds || [];
       },
     }),
     {
