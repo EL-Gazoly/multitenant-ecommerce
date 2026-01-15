@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/trpc/cliient";
+import Link from "next/link";
 interface SearchInputProps {
   disabled?: boolean;
   categories: CategoriesGetManyOutput;
@@ -45,8 +46,10 @@ export const SearchInput = ({ disabled, categories }: SearchInputProps) => {
         <ListFilterIcon className="size-4" />
       </Button>
       {hasMounted && session.data && (
-        <Button variant="elevated">
-          <BookmarkCheckIcon className="size-4" />
+        <Button variant="elevated" asChild>
+          <Link prefetch href="/library">
+            <BookmarkCheckIcon className="size-4" />
+          </Link>
         </Button>
       )}
     </div>
