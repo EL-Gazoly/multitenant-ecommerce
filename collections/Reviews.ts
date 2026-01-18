@@ -1,6 +1,14 @@
-import type { CollectionConfig } from "payload";
+import { isSuperAdmin } from "@/lib/access";
+import type { User as UserType } from "@/payload-types";
+import { ClientUser, CollectionConfig } from "payload";
 export const Reviews: CollectionConfig = {
   slug: "reviews",
+  access: {
+    read : ({req}) => isSuperAdmin(req?.user as UserType | ClientUser),
+    create: ({req}) => isSuperAdmin(req?.user as UserType | ClientUser),
+    update: ({req}) => isSuperAdmin(req?.user as UserType | ClientUser),
+    delete: ({req}) => isSuperAdmin(req?.user as UserType | ClientUser),
+  },
   labels: {
     singular: "Review",
     plural: "Reviews",
