@@ -35,9 +35,15 @@ export const ProductView = ({ productId }: ProductViewProps) => {
             </div>
           </div>
           <div className=" lg:col-span-5">
-            <p className=" font-medium italic text-muted-foreground">
-              No Special content
-            </p>
+            {product?.content ? (
+              <div className=" prose max-w-none">
+                {product.content}
+              </div>
+            ) : (
+              <p className=" font-medium italic text-muted-foreground">
+                No Special content
+              </p>
+            )}
           </div>
         </div>
       </section>

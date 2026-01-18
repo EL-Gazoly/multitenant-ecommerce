@@ -16,6 +16,9 @@ export const productsRouter = createTRPCRouter({
         collection: "products",
         depth: 2, // to get the tenant and the image
         id,
+        select: {
+          content: false,
+        },
       });
       let purchased = false;
       if (session.user) {
@@ -178,6 +181,9 @@ export const productsRouter = createTRPCRouter({
         sort,
         page: input.cursor,
         limit: input.limit,
+        select: {
+          content: false,
+        }
       });
       const dataWithSummarizedReviews = await Promise.all(products.docs.map(async (product) => {
         const reviews = await ctx.db.find({
