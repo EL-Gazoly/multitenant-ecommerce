@@ -1,5 +1,6 @@
 import configPromise from "@payload-config";
 import { getPayload } from "payload";
+import { stripe } from "@/lib/stripe";
 const categories = [
   {
     name: "All",
@@ -137,6 +138,19 @@ const categories = [
 ];
 const payload = await getPayload({ config: configPromise });
 const seed = async () => {
+  const adminAccount = await stripe.accounts.create({})
+  if(!adminAccount.id) {
+    throw new Error("Failed to create admin account");
+  }
+
+  const adminTenant = await payload.create({
+    collection: "tenants",
+    data: {
+      name: "Admin",
+      slug: "admin",
+      "stripeAccountId": adminAccount.id,
+    }
+  })
   await payload.create({
     collection: "users",
     data: {
@@ -144,6 +158,11 @@ const seed = async () => {
       email: "admin@demo.com",
       password: "demo",
       roles: ["super-admin"],
+      tenants: [
+        {
+          tenant: adminTenant.id,
+        }
+      ]
     },
   });
   for (const category of categories) {

@@ -9,8 +9,42 @@ import Stripe from "stripe";
 import { z } from "zod";
 import { CheckoutMetadata, ProductMetadata } from "../types";
 import { stripe } from "@/lib/stripe";
-
+import { PLATFORM_FEE_PERCENT } from "@/app/constants";
 export const checkoutRouter = createTRPCRouter({
+  verify: protectedProcedure.mutation(async ({ ctx }) => {
+    if(!ctx.session?.user) {
+      throw new TRPCError({ code: "UNAUTHORIZED", message: "Unauthorized" });
+    }
+   const user = await ctx.db.findByID({
+    collection: "users",
+    id: ctx.session.user.id,
+    depth: 0,
+   })
+   if(!user) {
+    throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
+   }
+   const tenantId = user.tenants?.[0]?.tenant as string ;
+   const tenant = await ctx.db.findByID({
+    collection: "tenants",
+    id: tenantId,
+   })
+   if(!tenant) {
+    throw new TRPCError({ code: "NOT_FOUND", message: "Tenant not found" });
+   }
+   if (!tenant.stripeAccountId) {
+    throw new TRPCError({ code: "NOT_FOUND", message: "Tenant Stripe account not found" });
+   }
+   const accountLink = await stripe.accountLinks.create({
+    account: tenant.stripeAccountId,
+    refresh_url: `${process.env.NEXT_PUBLIC_APP_URL}/`,
+    return_url: `${process.env.NEXT_PUBLIC_APP_URL}/`,
+    type: "account_onboarding",
+   })
+   if(!accountLink.url) {
+    throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to create account link" });
+   }
+   return { url: accountLink.url };
+  }),
   purchase: protectedProcedure
     .input(
       z.object({
@@ -62,6 +96,9 @@ export const checkoutRouter = createTRPCRouter({
       if (!tenant) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Tenant not found" });
       }
+      if (!tenant.stripeDetailsSubmitted) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Tenant Stripe details not submitted" });
+      }
       const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] =
         products.docs.map((product) => ({
           price_data: {
@@ -80,6 +117,8 @@ export const checkoutRouter = createTRPCRouter({
           },
           quantity: 1,
         }));
+        const totalAmount = products.docs.reduce((acc, item) => acc + item.price * 100, 0);
+        const platformFeeAmount = Math.round(totalAmount * (PLATFORM_FEE_PERCENT / 100));
       const checkout = await stripe.checkout.sessions.create({
         customer_email: ctx?.session?.user?.email ?? "",
         success_url: `${process.env.NEXT_PUBLIC_APP_URL}/tenants/${tenantSlug}/checkout?success=true`,
@@ -92,6 +131,11 @@ export const checkoutRouter = createTRPCRouter({
         metadata: {
           userId: ctx.session?.user?.id,
         } as CheckoutMetadata,
+        payment_intent_data: {
+          application_fee_amount: platformFeeAmount,
+        },
+      }, {
+        stripeAccount: tenant.stripeAccountId as string,
       });
       if (!checkout.url) {
         throw new TRPCError({

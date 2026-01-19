@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   }
 
   console.log("Successfully processed event", event.id);
-  const permittedEvents: string[] = ["checkout.session.completed"];
+  const permittedEvents: string[] = ["checkout.session.completed" , "account.updated"];
 
   // Only process events that are in the permitted list
   if (permittedEvents.includes(event.type)) {
@@ -72,6 +72,16 @@ export async function POST(request: Request) {
             });
           }
           break;
+        case "account.updated":
+         const account = event.data.object as Stripe.Account;
+         await payload.update({
+          collection: "tenants",
+          where: {stripeAccountId:{ equals: account.id }},
+          data: {
+            stripeDetailsSubmitted : account.details_submitted,
+          },
+         });
+         break;
         default:
           throw new Error(`Unsupported event type: ${event.type}`);
       }
