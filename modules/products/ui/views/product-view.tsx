@@ -11,6 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import dynamic from "next/dynamic";
 import { toast } from "sonner";
 import { useState } from "react";
+import { RichText } from "@payloadcms/richtext-lexical/react";
 
 const CartButton = dynamic(
   () => import("../components/cart-button").then((mod) => mod.CartButton),
@@ -101,7 +102,7 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
             </div>
             <div className="p-6 ">
               {product?.description ? (
-                <p className=" ">{product.description}</p>
+                <RichText data={product.description} />
               ) : (
                 <p className="font-medium text-muted-foreground italic">
                   No description available
@@ -158,6 +159,23 @@ export const ProductView = ({ productId, tenantSlug }: ProductViewProps) => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const ProductViewSkeleton = () => {
+  return (
+    <div className=" px-4 lg:px-12 py-10">
+      <div className=" border rounded-sm bg-white overflow-hidden">
+        <div className=" relative aspect-[3.9] border-b">
+          <Image
+            src={"/placeholder.png"}
+            alt={"Product Image"}
+            fill
+            className=" object-cover"
+          />
         </div>
       </div>
     </div>

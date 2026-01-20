@@ -5,6 +5,7 @@ import type { Sort, Where } from "payload";
 import type { Category, Media, Product, Tenant } from "@/payload-types";
 import { sortVAlues } from "../hooks/search-params";
 import { DEFAULT_LIMIT } from "@/app/constants";
+import { TRPCError } from "@trpc/server";
 export const productsRouter = createTRPCRouter({
   getOne: baseProcedure
     .input(z.object({ id: z.string() }))
@@ -21,6 +22,9 @@ export const productsRouter = createTRPCRouter({
         },
       });
       let purchased = false;
+      if(product?.isArchived) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Product not found" });
+      }
       if (session.user) {
         const ordersData = await ctx.db.find({
           collection: "orders",
@@ -106,6 +110,9 @@ export const productsRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const where: Where = {
         price: {},
+        isArchived: {
+          not_equals: true,
+        },
       };
       let sort: Sort = "-createdAt";
       if (input.sort === "trending") {
@@ -132,6 +139,11 @@ export const productsRouter = createTRPCRouter({
       if (input.tenantSlug) {
         where["tenant.slug"] = {
           equals: input.tenantSlug,
+        };
+      }else{
+        // if no tenant slug, show only public products
+        where["isPrivate"] = {
+          not_equals: true,
         };
       }
 

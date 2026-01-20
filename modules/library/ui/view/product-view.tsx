@@ -1,9 +1,12 @@
 "use client";
 import Link from "next/link";
-import { ArrowLeftIcon } from "lucide-react";
+import { ArrowLeftIcon, Loader2Icon } from "lucide-react";
 import { useTRPC } from "@/trpc/cliient";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ReviewSidebar } from "../components/review-sidebar";
+import { RichText } from "@payloadcms/richtext-lexical/react";
+import { Suspense } from "react";
+import { ReviewFormSkeleton } from "../components/review-form";
 interface ProductViewProps {
   productId: string;
 }
@@ -31,14 +34,14 @@ export const ProductView = ({ productId }: ProductViewProps) => {
         <div className=" grid grid-cols-1 lg:grid-cols-7 gap-4 lg:gap-16">
           <div className=" lg:col-span-2">
             <div className=" p-4 bg-white rounded-md border gap-4 ">
+              <Suspense fallback={<ReviewFormSkeleton />}>
               <ReviewSidebar productId={productId} />
+              </Suspense>
             </div>
           </div>
           <div className=" lg:col-span-5">
             {product?.content ? (
-              <div className=" prose max-w-none">
-                {product.content}
-              </div>
+                <RichText data={product.content} />
             ) : (
               <p className=" font-medium italic text-muted-foreground">
                 No Special content
@@ -47,6 +50,14 @@ export const ProductView = ({ productId }: ProductViewProps) => {
           </div>
         </div>
       </section>
+    </div>
+  );
+};
+
+export const ProductViewSkeleton = () => {
+  return (
+    <div className=" flex items-center justify-center h-screen">
+      <Loader2Icon className=" size-4 animate-spin" />
     </div>
   );
 };

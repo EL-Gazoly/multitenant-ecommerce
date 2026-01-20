@@ -1,6 +1,7 @@
 import { isSuperAdmin } from "@/lib/access";
 import type { User as UserType, Tenant } from "@/payload-types";
 import { ClientUser, CollectionConfig } from "payload";
+import { lexicalEditor, UploadFeature } from "@payloadcms/richtext-lexical";
 
 export const Products: CollectionConfig = {
   slug: "products",
@@ -10,6 +11,7 @@ export const Products: CollectionConfig = {
       const tenant = req.user?.tenants?.[0]?.tenant as Tenant;
       return Boolean(tenant?.stripeDetailsSubmitted)
     },
+    delete: ({req}) => isSuperAdmin(req?.user as UserType | ClientUser)
   },
   labels: {
     singular: "Product",
@@ -27,7 +29,7 @@ export const Products: CollectionConfig = {
     },
     {
       name: "description",
-      type: "text",
+      type: "richText",
     },
     {
       name: "price",
@@ -62,10 +64,44 @@ export const Products: CollectionConfig = {
     },
     {
       name:"content",
-      type: "textarea",
+      type: "richText",
+      editor: lexicalEditor({
+        features: ({defaultFeatures}) => [
+          ...defaultFeatures,
+          UploadFeature({
+            collections: {
+              media: {
+                fields: [
+                  {
+                    name: "alt",
+                    type: "text",
+                  }
+                ]
+              }
+            }
+          })
+        ]
+      }),
       admin: {
         description:
          "Protected content only visible to customers after purchase. Add product documentation, downloadable files, getting started guides, and bouns materials. supports markdown formatting.",
+      },
+    },
+    {
+      name: "isArchived",
+      label: "Archive",
+      type: "checkbox",
+      defaultValue: false,
+      admin: {
+        description: "If Checked, this product will be hidden from the public and only visible to admins.",
+      },
+    },
+    {
+      name: "isPrivate",
+      type: "checkbox",
+      defaultValue: false,
+      admin: {
+        description: "If Checked, this product will be hidden from the public storefront.",
       },
     }
   ],

@@ -72,6 +72,11 @@ export const checkoutRouter = createTRPCRouter({
                 equals: tenantSlug,
               },
             },
+            {
+              isArchived: {
+                not_equals: true,
+              }
+            }
           ],
         },
       });
@@ -156,9 +161,18 @@ export const checkoutRouter = createTRPCRouter({
         collection: "products",
         depth: 2,
         where: {
-          id: {
-            in: input.ids,
-          },
+          and: [
+            {
+              isArchived: {
+                not_equals: true,
+              }
+            },
+            {
+              id: {
+                in: input.ids,
+              },
+            }
+          ],
         },
       });
       if (products.docs.length !== input.ids.length) {

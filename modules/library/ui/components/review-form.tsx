@@ -144,3 +144,18 @@ export const ReviewForm = ({ productId, initialData }: ReviewFormProps) => {
     </Form>
   );
 };
+
+export const ReviewFormSkeleton = () => {
+  return (
+    <div className=" flex flex-col gap-y-4">
+      <div className=" flex flex-col gap-y-2">
+        <div className=" w-24 h-4 bg-gray-200 rounded-md animate-pulse" />
+        <div className=" w-32 h-4 bg-gray-200 rounded-md animate-pulse" />
+      </div>
+      <div className=" flex flex-col gap-y-2">
+        <div className=" w-24 h-4 bg-gray-200 rounded-md animate-pulse" />
+        <div className=" w-32 h-4 bg-gray-200 rounded-md animate-pulse" />
+      </div>
+    </div>
+  );
+};

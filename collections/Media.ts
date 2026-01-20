@@ -9,7 +9,6 @@ export const Media: CollectionConfig = {
     delete: ({req}) => isSuperAdmin(req?.user as UserType | ClientUser),
   },
   admin:{
-    hidden: ({user}) => !isSuperAdmin(user as UserType | ClientUser),
     useAsTitle: "alt",
   },
   fields: [
