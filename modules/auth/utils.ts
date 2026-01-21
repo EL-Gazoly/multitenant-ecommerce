@@ -13,6 +13,9 @@ export const generateAuthCookie =
       httpOnly: true,
       path: "/",
       maxAge: 60 * 60 * 24 * 30,
+      sameSite: "none",
+      domain: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
+      secure: process.env.NODE_ENV === "production",
     });
     return cookies;
   };

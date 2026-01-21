@@ -5,7 +5,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 export function generateTenantUrl(slug: string) {
-  return `/tenants/${slug}`;
+  let protocol = "https";
+  if (process.env.NODE_ENV === "development") {
+    protocol = "http";
+
+  }
+  const domain = process.env.NEXT_PUBLIC_ROOT_DOMAIN!;
+  return `${protocol}://${slug}.${domain}`;
 }
 
 export function formatCurrency(amount: number) {
