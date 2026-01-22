@@ -5,6 +5,7 @@ import { Suspense } from "react";
 interface ProductPageProps {
   params: Promise<{ slug: string; productId: string }>;
 }
+export const dynamic = 'force-dynamic'
 export const ProductPage = async ({ params }: ProductPageProps) => {
   const { slug, productId } = await params;
   const queryClient = getQueryClient();

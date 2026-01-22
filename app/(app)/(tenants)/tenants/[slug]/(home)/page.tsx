@@ -9,7 +9,7 @@ interface TenantPageProps {
   searchParams: Promise<SearchParams>;
   params: Promise<{ slug: string }>;
 }
-
+export const dynamic = 'force-dynamic'
 const TenantPage = async ({ searchParams, params }: TenantPageProps) => {
   const { slug } = await params;
   const filters = await loadProductFilter(searchParams);

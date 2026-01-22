@@ -4,7 +4,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { loadProductFilter } from "@/modules/products/hooks/search-params";
 import { ProductListView } from "@/modules/products/ui/views/product-list-view";
 import { DEFAULT_LIMIT } from "@/app/constants";
-
+export const dynamic = 'force-dynamic'
 interface CategoryPageProps {
   searchParams: Promise<SearchParams>;
 }
